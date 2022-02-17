@@ -1,3 +1,11 @@
+#!/usr/bin/python3
+# ----------------------------------------------------------------------
+# File     : server.py
+# Abstract : TCP socket server for managing numbers.
+# Author   : Albert Nadal Garriga (anadalg@gmail.com)
+# Date     : Tue, 15 Feb 20:09 +0100
+# ----------------------------------------------------------------------
+
 import sys
 import asyncio
 import uuid
@@ -111,11 +119,10 @@ class NumbersServer:
 
         while True:
 
-            """ I set a buffer with the max size allowed (64KiB) by the
-            StreamReader. Im assuming the application will receive a massive
-            amount of data, so use a large buffer should avoid lots of internal
+            """ Im assuming the application will receive massive amounts of
+            data, so use a proper buffer size should avoid lots of internal
             memory allocation and overhead when dealing with the TCP stream."""
-            buf = await reader_.read(65536)
+            buf = await reader_.read(4096)
 
             if not buf:
                 # The peer has been disconnected
@@ -135,12 +142,12 @@ class NumbersServer:
                 byte_array = buf[offset:offset+10]
                 length = len(byte_array)
 
-                """ Data transfered through TCP connections is sent in different
-                chunks of variable size. So, the last number sequence received
-                in a chunk can be incomplete. An incomplete number sequence has
-                a lenght < 10. So the remaining number sequece in the current
-                chunk must be concatenated at the begining of the next chunk
-                received."""
+                """ Data transfered through TCP connections is unpredictable.
+                Received chunks of data may have different sizes. So, the last
+                number sequence received in a chunk can be incomplete. An
+                incomplete number sequence has a lenght < 10. So the remaining
+                number sequece in the current chunk must be concatenated at the
+                begining of the next chunk received."""
                 if length < 10:
                     remaining_buf = buf[-length:]
                     break
