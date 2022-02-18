@@ -3,7 +3,7 @@
 # File     : client_terminate.py
 # Abstract : TCP socket client for sending the 'terminate\n' sequence.
 # Author   : Albert Nadal Garriga (anadalg@gmail.com)
-# Date     : Thu, 17 Feb 20:04 +0100
+# Date     : Thu, 17 Feb 20:51 +0100
 # ----------------------------------------------------------------------
 
 import socket
@@ -21,7 +21,7 @@ try:
             if not data:
                 print("Connection closed remotely.", flush=True)
                 break
-    except ConnectionResetError as ex:
+    except (ConnectionResetError, BrokenPipeError) as ex:
         print("Connection closed remotely.", flush=True)
     finally:
         sock.close()

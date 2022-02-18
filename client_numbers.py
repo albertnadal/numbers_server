@@ -3,7 +3,7 @@
 # File     : client_numbers.py
 # Abstract : TCP socket client for sending random numbers of fixed size.
 # Author   : Albert Nadal Garriga (anadalg@gmail.com)
-# Date     : Thu, 17 Feb 20:03 +0100
+# Date     : Thu, 17 Feb 20:26 +0100
 # ----------------------------------------------------------------------
 
 import socket
@@ -20,7 +20,7 @@ try:
             # Generate and send a random generated number with LF escape sequence
             number_str = str(random.randint(0, 999999999)).zfill(9)+"\n"
             sock.sendall(bytearray(number_str.encode()))
-        except ConnectionResetError as ex:
+        except (ConnectionResetError, BrokenPipeError) as ex:
             print("Connection closed remotely.", flush=True)
             sock.close()
             exit(0)
